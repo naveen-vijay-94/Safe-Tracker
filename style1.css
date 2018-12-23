@@ -1,0 +1,91 @@
+.findMe {
+    background-color: #ffffff;
+    border: none;
+    color: red;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bolder;
+    margin: 4px 2px;
+    height: 130px;
+    width: 130px;
+    border-radius: 50%;
+    position: absolute;
+    left:570px;
+    top:200px;
+    cursor: pointer;
+  }
+
+  .findMe:hover { 
+    background-color: grey;
+  }
+
+.heading {
+   color : white;
+   text-decoration: underline;
+   position: absolute;
+   left: 530px;
+   top:120px; 
+}
+
+.logOut {
+    background-color: #ffffff;
+    border: none;
+    color: red;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bolder;
+    margin: 4px 2px;
+    
+    position: absolute;
+    left:1159.3px;
+    top: -5px;
+    
+   
+}
+
+.logOut:hover { 
+    background-color: grey;
+  }
+
+
+  .form-popup {
+    background-color:white;
+    display: none;
+    position: absolute;
+    top: 20px;
+    left :100px;
+    height:500px;
+    width:1000px;
+    bottom: 0;
+    right: 15px;
+    border: 3px solid #f1f1f1;
+    /*z-index: 9;*/
+  }
+
+  .cross_button{
+      width:20px;
+      height:20px;
+      float:right;
+  }
+
+  .button {
+    background-color: skyblue; /* Green */
+    
+    border: none;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    width:60px;
+    cursor: pointer;
+    border-radius: 12px;
+    
+  }

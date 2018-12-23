@@ -1,0 +1,148 @@
+<html>
+    <head>
+        <title>
+           MY SAFETY APP
+        </title>
+        <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>   
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/axios/dist/axios.standalone.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/sha256.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/hmac.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/enc-base64.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/url-template/url-template.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/sigV4Client.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/apiGatewayClient.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
+        <script type="text/javascript" src="apiGateway-js-sdk/apigClient.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <link rel="stylesheet" type="text/css" href="style1.css"> 
+    </head>
+    <script>
+        
+        var latitude,longitude, urlParameter;
+        
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }
+        else{
+            console.log("GeoLocation is not supported by browser");
+        }
+
+        function showPosition(position) {
+           latitude = position.coords.latitude;
+           console.log(latitude);
+           longitude = position.coords.longitude;
+           console.log(longitude);
+           urlParameter = "latitude=" + latitude + "&longitude=" + longitude + "&token=" + token;
+        }
+
+        function hidePopup() {
+            document.getElementById("myForm").style.display = "none";
+        }
+
+        /*function redirect() {
+            window.location = 'https://s3.amazonaws.com/akritiwebapp/result.html?' + urlParameter;
+        }*/
+
+        
+
+        var apigClient = apigClientFactory.newClient({});
+        
+        function getsafetyalerts() {
+           document.getElementById("myForm").style.display = "block";
+           document.getElementById("waitingMessage").innerHTML = "Waiting...."
+            var params = {
+                
+            };          
+        
+            var body = {
+                "messages" : 
+                {
+                    "type" : "request",
+                    "unstructured" : 
+                    {
+                        "lat" : latitude,
+                        "long" : longitude,
+                        "timestamp" : "10/10/2018"
+                    }
+        
+                }
+            };
+        
+            var additionalParams = {        
+                headers: {
+                    
+                },
+                queryParams: {
+                    
+                }
+            };
+            //response = apigClient.safetyalertsPost(params, body, additionalParams);
+            //console.log(Date.now());
+            //console.log(response);
+            var json;
+			var SafetyLevel;
+            apigClient.safetyalertsPost(params, body, additionalParams)
+            .then(function(result){
+                   
+                    console.log(result)
+                    json = JSON.parse(result.data["body"]);
+                    SafetyLevel = json.SafetyLevel;
+                    var Felony = json.CrimeReport.FELONY;
+                    var Misdeneanor = json.CrimeReport.MISDEMEANOR
+                    var Violation = json.CrimeReport.VIOLATION;
+                    document.getElementById("waitingMessage").innerHTML = ""
+                    // Load google charts
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+            // var result = {"SafetyLevel": "Safe", 
+            //            "CrimeReport": {"MISDEMEANOR": 417, "FELONY": 236, "VIOLATION": 109}
+            //          }
+           
+           
+            // Draw the chart and set the chart values
+            function drawChart() {
+              var data = google.visualization.arrayToDataTable([
+              ['Crime', 'Total'],
+              ['FELONY', Felony],
+              ['VIOLATION', Misdeneanor],
+              ['MISDEMEANOR',Violation]
+            ]);
+
+              // Optional; add a title and set the width and height of the chart
+              var options = {'title':'Crime report', 'width':550, 'height':400};
+
+              // Display the chart inside the <div> element with id="piechart"
+              var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+              chart.draw(data, options);
+			  document.getElementById('safety').textContent = SafetyLevel;
+            
+            
+        }
+            }).catch( function(result){
+                    console.log(result)
+            });
+
+            
+		}
+        
+        </script>
+    <body background="background.jpg">
+        
+        <h1 class = "heading"> SAFE TRAVEL</h1>
+        <button id="src" type="submit" onclick=getsafetyalerts() class = "findMe">FIND ME</button>
+       <!-- <button id="src" type="submit" class = "findMe" onclick= 'redirect();'  >FIND ME</button>-->
+        <button id="logout" type="submit" onclick="location.href = 'https://mysafetyapp1.auth.us-east-1.amazoncognito.com/login?response_type=token&client_id=dc4jr17ilof276fvn0gcjo5l4&redirect_uri=https://s3.amazonaws.com/akritiwebapp/index.html';" class="logOut">Log Out</button> 
+        <div id="myForm" class = "form-popup">
+
+            
+            <button class= "button" type="submit" onclick = 'hidePopup();''>Close</button>
+            <div id="waitingMessage"></div>
+			<p> Safety Level: </p>
+			<p id = "safety"></p>
+            <div id="piechart"></div>
+           <!-- <img  class = "cross_button" src = "cross.png"/>-->
+        </div>
+    </body>
+</html>
